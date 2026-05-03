@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alan Health Profitability Cockpit</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f0f3ff;
+      --ink: #282830;
+      --muted: #656779;
+      --line: #dbe2f4;
+      --indigo: #5c59f3;
+      --green: #7fca6c;
+      --green-dark: #367940;
+      --green-soft: #ecf7e9;
+      --orange: #ff9359;
+      --orange-soft: #fff3e5;
+      --pink: #ff709b;
+      --pink-dark: #b80037;
+      --pink-soft: #ffe7f0;
+      --shadow: 0 10px 30px rgba(40, 40, 48, 0.08);
+      --radius: 18px;
+      --mono: "SF Mono", Menlo, Consolas, monospace;
+      --sans: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--bg); font-family: var(--sans); line-height: 1.35; }
+    .page { width: calc(100vw - 32px); max-width: 1440px; margin: 0 auto; padding: 28px 0 56px; }
+    .page > header, .page > .global-filter, .layout, .stack, .stack > .panel { width: 100%; max-width: 100%; justify-self: stretch; }
+    .layout { position: relative; width: 100%; }
+    .global-filter { display: flex; align-items: center; gap: 12px; width: 100%; margin: -4px 0 18px; flex-wrap: wrap; }
+    .global-filter .control { width: 210px; }
+    .filter-title { color: var(--indigo); font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .legend { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 14px; font-weight: 800; margin-left: auto; }
+    .legend strong { color: var(--ink); font-size: 14px; font-weight: 900; }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .legend i { width: 11px; height: 11px; border-radius: 999px; background: var(--ink); }
+    .legend .dot-good { background: var(--green-dark); }
+    .legend .dot-watch { background: #d97800; }
+    .legend .dot-critical { background: var(--pink-dark); }
+    header, .panel, .kpi, .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    header { width: 100%; padding: 28px; margin-bottom: 18px; }
+    .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .nav a { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 9px 12px; color: var(--indigo); background: #fff; font-size: 12px; font-weight: 900; text-decoration: none; }
+    .eyebrow { color: var(--indigo); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+    h1 { margin: 0; max-width: 980px; font-size: clamp(36px, 5vw, 62px); line-height: 0.96; letter-spacing: -0.05em; }
+    header p { max-width: 940px; margin: 16px 0 0; color: var(--muted); font-size: 18px; }
+    .controls { display: grid; gap: 10px; margin: 0; }
+    .control { display: grid; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; box-shadow: 0 4px 14px rgba(40, 40, 48, 0.05); }
+    label { color: var(--muted); font-size: 12px; font-weight: 900; }
+    select { width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; outline: 0; }
+    .stack { display: grid; gap: 18px; width: 100%; }
+    .panel { width: 100%; padding: 20px; }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+    .panel-title { flex: 1; }
+    .section-filter { width: 240px; margin: 12px 0 14px; }
+    h2 { margin: 0; font-size: 24px; letter-spacing: -0.035em; line-height: 1; }
+    h3 { margin: 0 0 10px; font-size: 16px; letter-spacing: -0.02em; }
+    .subtitle { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    .segment-number { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-right: 10px; border-radius: 11px; background: var(--indigo); color: #fff; font-size: 14px; font-weight: 900; vertical-align: middle; }
+    .tag, .pill { display: inline-flex; width: fit-content; align-items: center; border-radius: 999px; padding: 6px 9px; font-size: 12px; font-weight: 900; white-space: nowrap; }
+    .neutral { color: var(--indigo); }
+    .good { color: var(--green-dark); background: var(--green-soft); }
+    .watch { color: #9b4a00; background: var(--orange-soft); }
+    .critical { color: var(--pink-dark); background: var(--pink-soft); }
+    .value-neutral, .value-good, .value-watch, .value-critical { color: var(--ink); }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .kpi { position: relative; padding: 16px; min-height: 128px; }
+    .kpi.kpi-neutral { background: #fff; border-color: var(--line); }
+    .kpi.kpi-good { background: var(--green-soft); border-color: rgba(54, 121, 64, .35); }
+    .kpi.kpi-watch { background: var(--orange-soft); border-color: rgba(217, 120, 0, .35); }
+    .kpi.kpi-critical { background: var(--pink-soft); border-color: rgba(184, 0, 55, .35); }
+    .kpi .name { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; padding-right: 30px; }
+    .kpi-subtitle { margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .kpi .number { margin: 12px 0 2px; font-size: 32px; font-weight: 900; letter-spacing: -0.05em; }
+    .kpi .foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 12px; }
+    .kpi .signals { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .mom-text { color: var(--muted); font-size: 12px; font-weight: 900; white-space: nowrap; }
+    .kpi .mom-text { display: block; margin-bottom: 10px; }
+    .info-btn { position: absolute; top: 12px; right: 12px; border: 0; border-radius: 999px; background: #edf0f7; color: #6d7280; font-weight: 900; width: 26px; height: 26px; cursor: pointer; }
+    .info-pop { display: none; position: absolute; z-index: 10; inset: 10px; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 12px; box-shadow: 0 12px 30px rgba(40,40,48,.16); font-size: 12px; }
+    .info-pop.visible { display: block; }
+    .info-pop strong { display: block; margin-bottom: 6px; }
+    .info-pop code { display: block; margin: 7px 0; padding: 8px; border-radius: 10px; background: #282830; color: #fff; font-size: 11px; white-space: normal; }
+    .info-pop p { margin: 0; color: var(--muted); }
+    .message-grid { margin-top: 14px; }
+    .readout-list { display: grid; gap: 8px; }
+    .readout-list p { margin: 0; color: var(--muted); font-size: 13px; }
+    .readout-list strong { display: inline; margin-right: 6px; color: var(--ink); }
+    .card { padding: 14px; box-shadow: none; }
+    .card strong { display: block; margin-bottom: 6px; }
+    .card p { margin: 0; color: var(--muted); font-size: 13px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .mix-layout { display: grid; grid-template-columns: 360px 1fr; gap: 14px; align-items: start; }
+    .donut-card { position: relative; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 14px; }
+    .donut-wrap { display: grid; gap: 12px; justify-items: center; }
+    .donut-legend { display: grid; gap: 8px; font-size: 12px; width: 100%; }
+    .donut-legend span { display: flex; gap: 8px; align-items: center; justify-content: space-between; color: var(--muted); }
+    .donut-legend .legend-label { display: inline-flex; gap: 7px; align-items: center; width: 210px; color: var(--ink); font-weight: 900; border-radius: 999px; padding: 6px 10px; }
+    .product-icon { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; font-size: 14px; }
+    .bar-list { display: grid; gap: 10px; }
+    .bar-row { display: grid; grid-template-columns: 150px 1fr 70px; gap: 10px; align-items: center; font-size: 13px; }
+    .track { height: 28px; border-radius: 999px; background: var(--surface-soft); overflow: hidden; }
+    .bar { height: 100%; border-radius: 999px; background: var(--indigo); }
+    .bar.green { background: var(--green); }
+    .bar.orange { background: var(--orange); }
+    .bar.pink { background: var(--pink); }
+    .stacked-bridge { display: grid; gap: 10px; }
+    .stacked-track { display: flex; height: 34px; border-radius: 999px; background: var(--surface-soft); overflow: hidden; border: 1px solid var(--line); }
+    .stacked-segment { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 900; min-width: 42px; }
+    .bridge-legend { display: grid; gap: 7px; font-size: 12px; }
+    .bridge-legend span { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); }
+    .bridge-legend i { width: 12px; height: 12px; border-radius: 999px; display: inline-flex; margin-right: 6px; vertical-align: -1px; }
+    .diverging-chart { display: grid; gap: 10px; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 12px; }
+    .diverging-group { display: grid; gap: 10px; }
+    .diverging-group + .diverging-group { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .diverging-group-title { color: var(--indigo); font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .diverging-row { display: grid; grid-template-columns: 170px 1fr 76px; gap: 10px; align-items: center; font-size: 13px; }
+    .diverging-label strong { display: block; }
+    .diverging-label span { color: var(--muted); font-size: 11px; }
+    .diverging-track { position: relative; display: grid; grid-template-columns: 1fr 1fr; height: 24px; align-items: center; }
+    .diverging-track::before { content: ""; position: absolute; left: 50%; top: -4px; bottom: -4px; border-left: 1px dashed var(--line); }
+    .diverging-bar { height: 14px; border-radius: 999px; }
+    .diverging-bar.positive, .diverging-bar.neutral { grid-column: 2; justify-self: start; }
+    .diverging-bar.negative { grid-column: 1; justify-self: end; }
+    .diverging-bar.critical { background: var(--pink); }
+    .diverging-bar.good { background: var(--orange); }
+    .diverging-bar.neutral { background: #c9d1e7; }
+    .table-wrap { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; min-width: 100%; font-size: 13px; }
+    th, td { padding: 10px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--muted); background: var(--surface-soft); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
+    .th-help { position: relative; display: inline-flex; align-items: center; gap: 5px; }
+    .th-help-btn { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 999px; background: #edf0f7; color: #6d7280; font-size: 11px; font-weight: 900; text-transform: none; letter-spacing: 0; cursor: help; }
+    .th-help-pop { display: none; position: absolute; right: 0; top: 24px; z-index: 20; width: 260px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 12px 30px rgba(40,40,48,.16); padding: 11px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: none; line-height: 1.35; }
+    .th-help:hover .th-help-pop { display: block; }
+    tr:last-child td { border-bottom: 0; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    code, .formula { font-family: var(--mono); }
+    .formula { display: inline-flex; border-radius: 12px; background: #282830; color: #fff; padding: 9px 11px; font-size: 12px; margin-bottom: 12px; }
+    .service-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .service-card { position: relative; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 14px; min-height: 136px; }
+    .service-card .label { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+    .service-card .value { margin: 8px 0; font-size: 28px; font-weight: 900; letter-spacing: -.04em; }
+    .service-card p { margin: 0; color: var(--muted); font-size: 12px; }
+    .service-card .mom { display: inline-flex; margin-top: 10px; }
+    .action-list { display: grid; gap: 10px; }
+    .action { display: grid; grid-template-columns: 90px 1fr auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 12px; }
+    .owner { color: var(--indigo); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
+    .action strong { display: block; font-size: 13px; }
+    .action span { color: var(--muted); font-size: 12px; }
+    @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col, .mix-layout { grid-template-columns: 1fr; } .panel-head { flex-direction: column; } }
+    @media (max-width: 640px) { .page { width: min(100% - 18px, 1320px); padding-top: 12px; } header, .panel { padding: 16px; border-radius: 14px; } .kpi-grid, .service-grid { grid-template-columns: 1fr; } .bar-row, .action { grid-template-columns: 1fr; } h1 { font-size: 38px; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="nav"><a href="alan_health_dataset_model.html">Dataset Model</a></nav>
+    <header>
+      <div class="eyebrow">Monthly reporting case</div>
+      <h1>Alan Health Profitability Cockpit</h1>
+      <p>Dashboard output from the dataset model: exposure, earned premium, incurred claims, reserves, expenses and pricing expectations aggregated into monthly profitability views.</p>
+    </header>
+    <section class="global-filter" aria-label="Global dashboard filters">
+      <div class="filter-title">Global filter</div>
+      <div class="control"><label for="month">Month</label><select id="month"><option>Apr 2026</option><option>Mar 2026</option><option>Feb 2026</option></select></div>
+      <div class="legend" aria-label="Status legend"><strong>Status</strong><span><i></i>Neutral</span><span><i class="dot-good"></i>Good</span><span><i class="dot-watch"></i>Watch</span><span><i class="dot-critical"></i>Critical</span></div>
+    </section>
+    <div class="layout">
+      <div class="stack">
+      <section class="panel" id="executive">
+        <div class="panel-head"><div><h2><span class="segment-number">1</span>Executive Pulse</h2><p class="subtitle">Quick monthly answer: are we profitable, and are claims in line with pricing expectations?</p></div><span class="tag watch" id="pulseTag">Watch</span></div>
+        <div class="kpi-grid" id="kpis"></div>
+        <div class="message-grid"><article class="card"><strong>Executive readout</strong><div class="readout-list"><p><strong>Are we on track?</strong><span id="msgTrack"></span></p><p><strong>What explains it?</strong><span id="msgWhy"></span></p><p><strong>Decision</strong><span id="msgDecision"></span></p></div></article></div>
+      </section>
+      <section class="panel" id="exposure"><div class="panel-head"><div><h2><span class="segment-number">2</span>Exposure and Mix</h2><p class="subtitle">Who is covered, normalized by member-months, and where exposure is growing.</p></div><span class="tag neutral">Exposure spine</span></div><div class="two-col"><div class="donut-card"><h3>Member-month mix by product</h3><div class="donut-wrap" id="productDonut"></div></div><div><h3>Portfolio diagnostics</h3><div class="table-wrap"><table><thead><tr><th>Metric</th><th class="num">Value</th><th class="num">MoM evolution</th></tr></thead><tbody id="exposureTable"></tbody></table></div><div class="card" style="margin-top:14px"><strong>How to read it</strong><p>If higher-cover products grow faster than the rest of the portfolio, profitability can deteriorate even if pricing and claims behavior are stable. That is a mix effect.</p></div></div></div></section>
+      <section class="panel" id="segments"><div class="panel-head"><div class="panel-title"><h2><span class="segment-number">3</span>Profitability by Segment</h2><p class="subtitle">Dynamic segment view. Technical margin should be positive, but not interpreted as “the higher the better”: members and clients also pay for Alan’s service value, so margin must be sustainable without overpricing the experience.</p><div class="control section-filter"><label for="segmentType">Segment lens</label><select id="segmentType"><option value="product">Product</option><option value="client">Client type</option><option value="size">Company size</option><option value="age">Age band</option><option value="care">Care category</option><option value="maturity">Contract maturity</option></select></div></div><span class="tag neutral" id="segmentTag">Product lens</span></div><div class="table-wrap"><table><thead><tr><th>Segment</th><th class="num">Member-months</th><th class="num">Actual LR</th><th class="num">Expected LR</th><th class="num">A/E</th><th class="num">MoM LR movement</th><th class="num">Technical margin</th><th><span class="th-help">Status<span class="th-help-btn">?</span><span class="th-help-pop">Status is based on the LR gap: Actual LR minus Expected LR. Good = at or below expected. Watch = up to 3 pts above expected. Critical = more than 3 pts above expected.</span></span></th></tr></thead><tbody id="segmentRows"></tbody></table></div></section>
+      <section class="panel" id="claims"><div class="panel-head"><div><h2><span class="segment-number">4</span>Claims and Reserving Drivers</h2><p class="subtitle">Actual claims are shown on incurred basis, not paid-only basis.</p></div><span class="tag watch">Claims layer</span></div><div class="formula">incurred_claims = paid_claims_to_date + case_reserve + IBNR</div><div><h3>Portfolio reserving bridge</h3><p class="subtitle" style="margin-bottom:10px">Global claims maturity check: validates incurred claims completeness, not product attribution.</p><div class="bar-list" id="reserveBridge"></div></div><div style="margin-top:14px"><h3>Frequency / Severity</h3><div class="table-wrap"><table><thead><tr><th>Driver</th><th class="num">April</th><th class="num">MoM</th><th>Readout</th></tr></thead><tbody id="driverRows"></tbody></table></div></div><div style="margin-top:14px"><h3>Contribution to LR gap vs expected</h3><div><h3>Care category contribution</h3><div id="careContributionRows"></div></div><div style="margin-top:14px"><h3>Product mix contribution</h3><div id="productContributionRows"></div></div><div style="margin-top:14px"><h3>Contract maturity contribution</h3><div id="maturityContributionRows"></div></div><p class="subtitle">These contribution views explain why actual LR differs from expected LR. MoM remains a trend signal, but the control signal is gap versus pricing expectation.</p></div></section>
+      <section class="panel" id="serviceSignals"><div class="panel-head"><div><h2><span class="segment-number">5</span>Alan Service & Operating Signals</h2><p class="subtitle">Secondary Alan-specific layer: monitored as service quality and operating efficiency signals, not as direct proof of claims savings.</p></div><span class="tag neutral">Alan context</span></div><div class="service-grid" id="serviceSignalsGrid"></div></section>
+      <section class="panel" id="actionsPanel"><div class="panel-head"><div class="panel-title"><h2><span class="segment-number">6</span>Forecast and Actions</h2><p class="subtitle">Turn the monthly diagnosis into pricing, claims, product and data decisions.</p><div class="control section-filter"><label for="scenario">Scenario</label><select id="scenario"><option value="base">Base</option><option value="inflation">+5% claims inflation</option><option value="reserve">IBNR stress</option></select></div></div><span class="tag neutral">Decision layer</span></div><div><h3>Forecast</h3><div class="table-wrap"><table><thead><tr><th>Metric</th><th class="num">Value</th><th>Status</th></tr></thead><tbody id="forecastRows"></tbody></table></div></div><div style="margin-top:14px"><h3>Action log</h3><div class="action-list" id="actions"></div></div></section>
+      </div>
+    </div>
+  </main>
+  <script>
+    const base={all:{mm:158000,earned:12800000,paid:8800000,caseReserve:500000,ibnr:1200000,expenses:1344000,expected:10160000,forecastLR:.825,ytdLR:.802,age:'37.8',newBiz:.22,service:.18},company:{mm:112000,earned:9400000,paid:6280000,caseReserve:360000,ibnr:820000,expenses:890000,expected:7200000,forecastLR:.795,ytdLR:.781,age:'36.4',newBiz:.18,service:.17},individual:{mm:46000,earned:3400000,paid:2520000,caseReserve:140000,ibnr:380000,expenses:454000,expected:2960000,forecastLR:.892,ytdLR:.861,age:'40.9',newBiz:.31,service:.21}};
+    const products=[['Companies Essentiel','Company',42000,2268000,1678000,1680000,230000,.021],['Companies Balanced','Company',39000,2652000,2070000,2050000,291000,.014],['Companies Optimal','Company',31000,2821000,2450000,2260000,369000,.048],['TNS Rubis','Individual/TNS',13000,624000,510000,468000,106000,.009],['TNS Emeraude','Individual/TNS',18000,1134000,940000,900000,170000,.027],['TNS Saphir','Individual/TNS',15000,1185000,1080000,1020000,178000,.052]];
+    const segmentSets={product:products.map(r=>({name:r[0],mm:r[2],earned:r[3],incurred:r[4],expected:r[5],expenses:r[6]})),client:[{name:'Company',mm:112000,earned:9400000,incurred:7460000,expected:7200000,expenses:890000},{name:'Individual/TNS',mm:46000,earned:3400000,incurred:3040000,expected:2960000,expenses:454000}],size:[{name:'1-10 employees',mm:18000,earned:1350000,incurred:1240000,expected:1080000,expenses:175000},{name:'11-50 employees',mm:36000,earned:2810000,incurred:2180000,expected:2150000,expenses:280000},{name:'51-100 employees',mm:30000,earned:2500000,incurred:1880000,expected:1910000,expenses:220000},{name:'100+ employees',mm:28000,earned:2740000,incurred:2160000,expected:2060000,expenses:215000}],age:[{name:'0-17',mm:21000,earned:1210000,incurred:710000,expected:760000,expenses:118000},{name:'18-29',mm:28000,earned:1730000,incurred:1180000,expected:1260000,expenses:160000},{name:'30-39',mm:43000,earned:3100000,incurred:2360000,expected:2400000,expenses:285000},{name:'40-49',mm:31000,earned:2700000,incurred:2230000,expected:2120000,expenses:255000},{name:'50-59',mm:24000,earned:2550000,incurred:2320000,expected:2150000,expenses:255000},{name:'60+',mm:11000,earned:1510000,incurred:1700000,expected:1470000,expenses:271000}],care:[{name:'Dental',mm:158000,earned:12800000,incurred:2520000,expected:2200000,expenses:320000},{name:'Hospital',mm:158000,earned:12800000,incurred:2840000,expected:2750000,expenses:260000},{name:'Optical',mm:158000,earned:12800000,incurred:1680000,expected:1600000,expenses:190000},{name:'Consultation',mm:158000,earned:12800000,incurred:1470000,expected:1500000,expenses:260000},{name:'Pharmacy',mm:158000,earned:12800000,incurred:1150000,expected:1220000,expenses:180000},{name:'Other',mm:158000,earned:12800000,incurred:840000,expected:890000,expenses:134000}],maturity:[{name:'New business',mm:35000,earned:2660000,incurred:2380000,expected:2140000,expenses:420000},{name:'Year 2',mm:46000,earned:3580000,incurred:2860000,expected:2810000,expenses:360000},{name:'Mature',mm:77000,earned:6560000,incurred:5260000,expected:5210000,expenses:564000}]};
+    const segmentMomLR={'Companies Essentiel':-0.2,'Companies Balanced':0.4,'Companies Optimal':1.1,'TNS Rubis':-0.1,'TNS Emeraude':0.3,'TNS Saphir':0.9,'Company':0.6,'Individual/TNS':1.0,'1-10 employees':1.6,'11-50 employees':0.4,'51-100 employees':-0.5,'100+ employees':0.3,'0-17':-0.2,'18-29':-0.5,'30-39':0.1,'40-49':0.5,'50-59':0.8,'60+':1.9,'Dental':1.2,'Hospital':0.4,'Optical':-0.1,'Consultation':0.3,'Pharmacy':0.7,'Other':-0.4,'New business':1.5,'Year 2':0.5,'Mature':-0.4};
+    const fmtMove=(value,suffix='')=>`${value>=0?'↑':'↓'} ${value>=0?'+':''}${Number(value).toFixed(1)}${suffix}`;const fmtPts=value=>fmtMove(value,' pts');
+    const actions=[['Pricing','Review Optimal and new-business assumptions','Before M+15','watch'],['Claims','Investigate dental A/E and hospital large claims','M+6','critical'],['Data','Validate IBNR and paid-to-incurred ratio','M+4','watch'],['Product','Assess guarantee richness on high-LR cohorts','M+15','watch'],['Prevention','Track care navigation users as leading signal only','M+15','good']];
+    const defs={'Member-months':['Normalized exposure.','sum(active_days / days_in_month)','Avoids overcounting members who joined or left mid-month.'],'Earned premium':['Premium earned for the covered period.','earned_premium','Correct revenue basis for profitability.'],'Incurred claims':['Best estimate of claims for care that occurred.','paid_claims + case_reserve + IBNR','Avoids recent months looking artificially profitable.'],'Actual LR':['Share of premium consumed by incurred claims.','incurred_claims / earned_premium','Core insurance profitability signal.'],'A/E':['Actual claims compared with pricing expectation.','incurred_claims / expected_claims','Shows whether claims match pricing assumptions.'],'Technical margin':['Margin after claims and direct expenses.','earned_premium - incurred_claims - direct_expenses','Connects actuarial result to euro profitability.'],'Combined ratio':['Claims plus expenses as share of premium.','loss_ratio + expense_ratio','Below 100% means premium covers claims and direct expenses.'],'Forecast YE LR':['Expected full-year loss ratio.','forecast incurred_claims / forecast earned_premium','Forward-looking view for action planning.']};
+    const fmtMoney=value=>`€${Number(value/1000000).toFixed(1)}m`;const fmtPct=value=>`${(Number(value)*100).toFixed(1)}%`;const fmtNum=value=>Number(value).toLocaleString('en-US');const cls=gap=>gap<=0?'good':gap<=.03?'watch':'critical';const statusLabel=status=>({neutral:'Neutral',good:'Good',watch:'Watch',critical:'Critical'}[status]||status);
+    function adjusted(data){const scenario=document.getElementById('scenario').value;const d={...data};if(scenario==='inflation')d.paid*=1.05;if(scenario==='reserve')d.ibnr*=1.25;d.incurred=d.paid+d.caseReserve+d.ibnr;d.actualLR=d.incurred/d.earned;d.expectedLR=d.expected/d.earned;d.ae=d.incurred/d.expected;d.combined=(d.incurred+d.expenses)/d.earned;d.technical=d.earned-d.incurred-d.expenses;return d;}
+    function renderKpis(d){const cards=[['Member-months',fmtNum(d.mm),'exposure spine','neutral','↑ MoM +2.4%'],['Earned premium',fmtMoney(d.earned),'premium table','neutral','↑ MoM +3.8%'],['Incurred claims',fmtMoney(d.incurred),'paid + reserves + IBNR',cls(d.actualLR-d.expectedLR),'↑ MoM +5.7%'],['Actual LR',fmtPct(d.actualLR),`expected ${fmtPct(d.expectedLR)}`,cls(d.actualLR-d.expectedLR),'↑ MoM +1.6 pts'],['A/E',`${(d.ae*100).toFixed(0)}%`,'actual / expected claims',cls(d.ae-1),'↑ MoM +2 pts'],['Technical margin',fmtMoney(d.technical),'after claims and expenses',d.technical>=0?'good':'critical','↓ MoM -€0.2m'],['Combined ratio',fmtPct(d.combined),'claims + expenses / premium',cls(d.combined-.93),'↑ MoM +1.1 pts'],['Forecast YE LR',fmtPct(d.forecastLR),'updated estimate',cls(d.forecastLR-d.expectedLR),'↑ MoM +0.4 pts']];document.getElementById('kpis').innerHTML=cards.map(([name,value,foot,status,mom],i)=>{const def=defs[name];return `<article class="kpi kpi-${status}"><button class="info-btn" type="button" data-info="${i}" aria-label="Explain ${name}">?</button><div class="info-pop" id="info-${i}"><strong>${name}</strong><p>${def[0]}</p><code>${def[1]}</code><p>${def[2]}</p></div><div class="name">${name}</div><div class="kpi-subtitle">${foot}</div><div class="number value-${status}">${value}</div><span class="mom-text">${mom}</span></article>`}).join('');document.querySelectorAll('.info-btn').forEach(btn=>btn.addEventListener('click',event=>{event.stopPropagation();const pop=document.getElementById(`info-${btn.dataset.info}`);document.querySelectorAll('.info-pop').forEach(p=>{if(p!==pop)p.classList.remove('visible')});pop.classList.toggle('visible')}));}
+    function renderMessages(d){const gap=d.actualLR-d.expectedLR;document.getElementById('pulseTag').className=`tag ${cls(gap)}`;document.getElementById('pulseTag').textContent=gap<=0?'On track':gap<=.03?'Watch':'Off track';document.getElementById('msgTrack').textContent=`April actual LR is ${fmtPct(d.actualLR)} versus expected LR ${fmtPct(d.expectedLR)}. A/E is ${(d.ae*100).toFixed(0)}%.`;document.getElementById('msgWhy').textContent=gap>0?'Claims are above pricing expectation, mainly dental severity plus recent-month IBNR.':'Claims are at or below pricing expectation after reserves.';document.getElementById('msgDecision').textContent=gap>0?'Review pricing assumptions for weak cohorts and validate reserve adequacy before M+15.':'Continue growth while monitoring mix and incurred claims lag.';}
+    function renderExposure(d){const companyProducts=products.filter(p=>p[1]==='Company'),tnsProducts=products.filter(p=>p[1]!=='Company');const companyTotal=companyProducts.reduce((sum,p)=>sum+p[2],0),tnsTotal=tnsProducts.reduce((sum,p)=>sum+p[2],0);const companyShare=112000/158000,tnsShare=46000/158000;const sub=rowTotal=>p=>[p[0],fmtPct(p[2]/rowTotal),fmtMove(p[7]*100,'%'),true];let rows=[['Member-months',fmtNum(d.mm),'↑ +2.4%',false],['Company share',fmtPct(companyShare),'↑ +1.8 pts',false],...companyProducts.map(sub(companyTotal)),['Individual/TNS share',fmtPct(tnsShare),'↓ -1.8 pts',false],...tnsProducts.map(sub(tnsTotal)),['Average age',d.age,'↑ +0.2 yrs',false],['New business share',fmtPct(d.newBiz),'↑ +1.1 pts',false],['Service usage rate',fmtPct(d.service),'↑ +0.7 pts',false],['Premium PMPM',`€${(d.earned/d.mm).toFixed(1)}`,'↑ +1.3%',false]];document.getElementById('exposureTable').innerHTML=rows.map(r=>`<tr><td>${r[3]?`<span style="color:var(--muted);padding-left:14px">↳ ${r[0]}</span>`:`<strong>${r[0]}</strong>`}</td><td class="num">${r[3]?r[1]:`<strong>${r[1]}</strong>`}</td><td class="num">${r[3]?r[2]:`<strong>${r[2]}</strong>`}</td></tr>`).join('');renderProductDonut(products);}
+    function renderProductDonut(entries){const total=entries.reduce((sum,p)=>sum+p[2],0);let offset=25;const productStyle={'Companies Essentiel':{icon:'🧘',color:'#22e39e'},'Companies Balanced':{icon:'🌈',color:'#fff256'},'Companies Optimal':{icon:'🏆',color:'#5c59f3'},'TNS Rubis':{icon:'♦️',color:'#ed4e4e'},'TNS Emeraude':{icon:'💚',color:'#11ae76'},'TNS Saphir':{icon:'🔷',color:'#1c82ff'}};const rings=entries.map(p=>{const pct=p[2]/total*100;const color=(productStyle[p[0]]||{}).color||'#c9d1e7';const circle=`<circle r="58" cx="90" cy="90" fill="transparent" stroke="${color}" stroke-width="22" stroke-dasharray="${pct} ${100-pct}" stroke-dashoffset="-${offset}" pathLength="100"/>`;offset+=pct;return circle}).join('');const legend=entries.map(p=>{const pct=(p[2]/total*100).toFixed(1);const style=productStyle[p[0]]||{icon:'•',color:'#c9d1e7'};return `<span><span class="legend-label" style="background:${style.color}"><span class="product-icon">${style.icon}</span>${p[0]}</span><strong>${pct}%</strong></span>`}).join('');document.getElementById('productDonut').innerHTML=`<svg viewBox="0 0 180 180" width="300" aria-label="Member-month mix by product">${rings}<circle r="39" cx="90" cy="90" fill="#fff"/><text x="90" y="86" text-anchor="middle" font-size="13" font-weight="900" fill="#282830">${fmtNum(total)}</text><text x="90" y="104" text-anchor="middle" font-size="11" fill="#656779">member-months</text></svg><div class="donut-legend">${legend}</div>`;}
+    function renderSegments(){const lens=document.getElementById('segmentType').value;const names={product:'Product lens',client:'Client type lens',size:'Company size lens',age:'Age band lens',care:'Care category lens',maturity:'Contract maturity lens'};document.getElementById('segmentTag').textContent=names[lens];document.getElementById('segmentRows').innerHTML=segmentSets[lens].map(r=>{let incurred=r.incurred;if(document.getElementById('scenario').value==='inflation')incurred*=1.05;const actualLR=incurred/r.earned,expectedLR=r.expected/r.earned,gap=actualLR-expectedLR,ae=incurred/r.expected,tm=r.earned-incurred-r.expenses,momLR=segmentMomLR[r.name]??0;return `<tr><td><strong>${r.name}</strong></td><td class="num">${fmtNum(r.mm)}</td><td class="num">${fmtPct(actualLR)}</td><td class="num">${fmtPct(expectedLR)}</td><td class="num">${(ae*100).toFixed(0)}%</td><td class="num">${fmtPts(momLR)}</td><td class="num">${fmtMoney(tm)}</td><td><span class="pill ${cls(gap)}">${statusLabel(cls(gap))}</span></td></tr>`}).join('');}
+    function renderClaims(d){
+      const total=d.incurred;
+      const reserve=[['Paid claims to date',d.paid,'var(--indigo)',''],['Case reserve',d.caseReserve,'rgba(92, 89, 243, 0.58)',''],['IBNR',d.ibnr,'repeating-linear-gradient(135deg, rgba(92, 89, 243, 0.18) 0 6px, rgba(92, 89, 243, 0.72) 6px 9px)','striped']];
+      document.getElementById('reserveBridge').innerHTML=`<div class="stacked-bridge"><div><strong>Incurred claims</strong><span class="num" style="float:right">${fmtMoney(total)}</span></div><div class="stacked-track">${reserve.map(r=>`<div class="stacked-segment ${r[3]}" style="width:${r[1]/total*100}%;background:${r[2]}">${(r[1]/total*100).toFixed(0)}%</div>`).join('')}</div><div class="bridge-legend">${reserve.map(r=>`<span><span><i class="${r[3]}" style="background:${r[2]}"></i>${r[0]}</span><strong>${fmtMoney(r[1])}</strong></span>`).join('')}</div></div>`;
+
+      const drivers=[['Claim frequency','42.5 / 100','↑ +1.4','More claims per 100 member-months.'],['Average severity','€156','↑ +3.2%','Dental and hospital drive severity.'],['Large claims share','18.6%','↑ +2.1 pts','Large hospital claims need separate view.'],['Paid-to-incurred ratio',fmtPct(d.paid/d.incurred),'↓ -4.0 pts','Recent month uncertainty remains material.']];
+      document.getElementById('driverRows').innerHTML=drivers.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+
+      const careImpact=[['Dental','↑ +12.0%',1.8,'Above expected: higher dental severity.'],['Hospital','↓ -2.0%',-0.3,'Slightly below expected, still volatile.'],['Optical','↑ +3.0%',0.2,'Close to expected, product-sensitive.'],['Consultations','↑ +1.0%',0.1,'Close to expected: high frequency, low severity.'],['Pharmacy','↑ +4.0%',0.4,'Above expected: watch recurring trend.']];
+      const productGroups=[['Companies',[['Essentiel','↑ +2.1%',-0.1,'96%','Lower-cover company book below expected.'],['Balanced','↑ +1.4%',0.1,'101%','Core company book close to expected.'],['Optimal','↑ +4.8%',0.8,'108%','Richer company cover above expected.']]],['TNS',[['Rubis','↑ +0.9%',0.0,'100%','Lower-cover individual book in line with expected.'],['Emeraude','↑ +2.7%',0.2,'100%','Mid-cover individual book in line with expected.'],['Saphir','↑ +5.2%',0.5,'106%','Richer TNS exposure slightly above expected.']]]];
+      const maturityImpact=[['New business','↑ +6.0%',0.9,'New cohorts above expected and less credible.'],['Year 2','↑ +2.5%',0.2,'Near expected as experience stabilizes.'],['Mature','↑ +0.8%',-0.2,'Mature cohorts slightly below expected.']];
+      const allContributionValues=[...careImpact.map(r=>r[2]),...productGroups.flatMap(group=>group[1].map(r=>r[2])),...maturityImpact.map(r=>r[2])];
+      const maxContributionGap=Math.max(...allContributionValues.map(v=>Math.abs(v)),0.1);
+      const contributionTone=value=>Math.abs(value)<0.15?'neutral':value>0?'critical':'good';
+      const contributionBar=row=>{const value=row[2];const width=Math.max(6,Math.abs(value)/maxContributionGap*100);const direction=value<0?'negative':'positive';return {width,direction,tone:contributionTone(value)};};
+
+      document.getElementById('careContributionRows').innerHTML=`<div class="diverging-chart">${careImpact.map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>Claims MoM ${r[1]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div><p class="subtitle" style="margin-top:8px">All LR gap contribution charts use the same scale. Grey = not significant, yellow = favorable versus expected, red = adverse versus expected. IBNR is handled in the reserving bridge, not as a care category.</p>`;
+      document.getElementById('productContributionRows').innerHTML=`<div class="diverging-chart">${productGroups.map(group=>`<div class="diverging-group"><div class="diverging-group-title">${group[0]}</div>${group[1].map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>MoM mix ${r[1]} · A/E ${r[3]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div>`).join('')}</div><p class="subtitle" style="margin-top:8px">A/E remains the pricing adequacy signal; bars use the same scale as care category and maturity contributions.</p>`;
+      document.getElementById('maturityContributionRows').innerHTML=`<div class="diverging-chart">${maturityImpact.map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>Exposure MoM ${r[1]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div><p class="subtitle" style="margin-top:8px">Exposure MoM is context; the bar shows whether the maturity bucket is above or below expected LR on the common scale.</p>`;
+    }
+    function renderServiceSignals(d){const rows=[['Cost-to-serve PMPM','€3.7','Direct service and claims operations cost per member-month.','(care operations + claims ops + support cost) / member-months','Shows whether Alan scales operationally as membership grows.','↓ MoM -€0.2'],['Automation rate','65%','Share of service or claims tasks handled without manual intervention.','automated tasks / total eligible tasks','Higher automation should reduce cost-to-serve without damaging service quality.','↑ MoM +3 pts'],['Care navigation usage',fmtPct(d.service),'Leading signal for better care orientation, not causal savings proof.','members using care navigation / active members','Useful leading indicator, but claims savings require controlled cohort analysis.','↑ MoM +0.7 pts'],['Fast reimbursement','89%','Share of reimbursements processed within target service time.','reimbursements within SLA / total reimbursements','Service quality metric to monitor alongside operating efficiency.','↑ MoM +2 pts']];document.getElementById('serviceSignalsGrid').innerHTML=rows.map((r,i)=>`<article class="service-card"><button class="info-btn service-info-btn" type="button" data-service-info="${i}" aria-label="Explain ${r[0]}">?</button><div class="info-pop" id="service-info-${i}"><strong>${r[0]}</strong><p>${r[2]}</p><code>${r[3]}</code><p>${r[4]}</p></div><div class="label">${r[0]}</div><div class="value">${r[1]}</div><p>${r[2]}</p><span class="mom-text mom">${r[5]}</span></article>`).join('');document.querySelectorAll('.service-info-btn').forEach(btn=>btn.addEventListener('click',event=>{event.stopPropagation();const pop=document.getElementById(`service-info-${btn.dataset.serviceInfo}`);document.querySelectorAll('.info-pop').forEach(p=>{if(p!==pop)p.classList.remove('visible')});pop.classList.toggle('visible')}));}
+    function renderForecast(d){const rows=[['Year-end expected LR',fmtPct(d.forecastLR),cls(d.forecastLR-d.expectedLR)],['Full-year technical margin',fmtMoney(d.technical*12),'good'],['+5% claims inflation LR',fmtPct((d.incurred*1.05)/d.earned),cls((d.incurred*1.05)/d.earned-d.expectedLR)],['IBNR stress LR',fmtPct((d.paid+d.caseReserve+d.ibnr*1.25)/d.earned),cls((d.paid+d.caseReserve+d.ibnr*1.25)/d.earned-d.expectedLR)]];document.getElementById('forecastRows').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td><span class="pill ${r[2]}">${statusLabel(r[2])}</span></td></tr>`).join('');document.getElementById('actions').innerHTML=actions.map(a=>`<div class="action"><div class="owner">${a[0]}</div><div><strong>${a[1]}</strong><span>${a[2]}</span></div><span class="pill ${a[3]}">${statusLabel(a[3])}</span></div>`).join('');}
+    function update(){const d=adjusted(base.all);renderKpis(d);renderMessages(d);renderExposure(d);renderSegments();renderClaims(d);renderServiceSignals(d);renderForecast(d);}['segmentType','scenario','month'].forEach(id=>document.getElementById(id).addEventListener('change',update));document.addEventListener('click',()=>document.querySelectorAll('.info-pop').forEach(p=>p.classList.remove('visible')));update();
+  </script>
+</body>
+</html>
