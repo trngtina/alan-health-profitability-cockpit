@@ -6,73 +6,74 @@
   <title>Alan Health Profitability Cockpit</title>
   <style>
     :root {
-      --bg: #f7f8fb;
+      --bg: #fbf7ef;
       --surface: #ffffff;
-      --surface-soft: #f0f3ff;
+      --surface-soft: #f2f0ff;
       --ink: #282830;
       --muted: #656779;
-      --line: #dbe2f4;
+      --line: #e6e0f4;
       --indigo: #5c59f3;
-      --green: #7fca6c;
-      --green-dark: #367940;
-      --green-soft: #ecf7e9;
-      --orange: #ff9359;
-      --orange-soft: #fff3e5;
+      --indigo-dark: #3431b5;
+      --green: #22e39e;
+      --green-dark: #118a61;
+      --green-soft: #e8fff4;
+      --orange: #fff256;
+      --orange-soft: #fffbe0;
       --pink: #ff709b;
       --pink-dark: #b80037;
       --pink-soft: #ffe7f0;
-      --shadow: 0 10px 30px rgba(40, 40, 48, 0.08);
-      --radius: 18px;
+      --shadow: 0 18px 45px rgba(52, 49, 181, 0.10);
+      --radius: 24px;
       --mono: "SF Mono", Menlo, Consolas, monospace;
       --sans: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: var(--bg); font-family: var(--sans); line-height: 1.35; }
+    body { margin: 0; color: var(--ink); background: radial-gradient(circle at 8% 4%, rgba(34, 227, 158, .26), transparent 28%), radial-gradient(circle at 92% 0%, rgba(255, 242, 86, .38), transparent 24%), linear-gradient(180deg, #fbf7ef 0%, #f7f5ff 48%, #fbf7ef 100%); font-family: var(--sans); line-height: 1.35; }
     .page { width: calc(100vw - 32px); max-width: 1440px; margin: 0 auto; padding: 28px 0 56px; }
     .page > header, .page > .global-filter, .layout, .stack, .stack > .panel { width: 100%; max-width: 100%; justify-self: stretch; }
     .layout { position: relative; width: 100%; }
-    .global-filter { display: flex; align-items: center; gap: 12px; width: 100%; margin: -4px 0 18px; flex-wrap: wrap; }
+    .global-filter { display: flex; align-items: center; gap: 12px; width: 100%; margin: -2px 0 18px; flex-wrap: wrap; padding: 10px 12px; border: 1px solid rgba(92, 89, 243, .18); border-radius: 18px; background: rgba(255,255,255,.72); backdrop-filter: blur(10px); box-shadow: 0 12px 28px rgba(52, 49, 181, .07); }
     .global-filter .control { width: 210px; }
-    .filter-title { color: var(--indigo); font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .filter-title { color: var(--indigo-dark); font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
     .legend { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 14px; font-weight: 800; margin-left: auto; }
     .legend strong { color: var(--ink); font-size: 14px; font-weight: 900; }
     .legend span { display: inline-flex; align-items: center; gap: 5px; }
     .legend i { width: 11px; height: 11px; border-radius: 999px; background: var(--ink); }
     .legend .dot-good { background: var(--green-dark); }
-    .legend .dot-watch { background: #d97800; }
+    .legend .dot-watch { background: #d1b700; }
     .legend .dot-critical { background: var(--pink-dark); }
     header, .panel, .kpi, .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-    header { width: 100%; padding: 28px; margin-bottom: 18px; }
+    header { position: relative; overflow: hidden; width: 100%; padding: 34px; margin-bottom: 18px; color: #fff; border: 0; background: radial-gradient(circle at 82% 18%, rgba(255, 242, 86, .95), transparent 18%), radial-gradient(circle at 78% 78%, rgba(34, 227, 158, .72), transparent 22%), linear-gradient(135deg, #3431b5 0%, #5c59f3 58%, #726fff 100%); }
+    header::after { content: ""; position: absolute; right: -70px; bottom: -80px; width: 280px; height: 280px; border-radius: 999px; border: 34px solid rgba(255,255,255,.18); }
     .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-    .nav a { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 9px 12px; color: var(--indigo); background: #fff; font-size: 12px; font-weight: 900; text-decoration: none; }
-    .eyebrow { color: var(--indigo); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
-    h1 { margin: 0; max-width: 980px; font-size: clamp(36px, 5vw, 62px); line-height: 0.96; letter-spacing: -0.05em; }
-    header p { max-width: 940px; margin: 16px 0 0; color: var(--muted); font-size: 18px; }
+    .nav a { display: inline-flex; border: 1px solid rgba(92, 89, 243, .22); border-radius: 999px; padding: 9px 13px; color: var(--indigo-dark); background: rgba(255,255,255,.78); font-size: 12px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 22px rgba(52,49,181,.08); }
+    .eyebrow { position: relative; z-index: 1; color: rgba(255,255,255,.78); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+    h1 { position: relative; z-index: 1; margin: 0; max-width: 980px; font-size: clamp(38px, 5.5vw, 70px); line-height: 0.94; letter-spacing: -0.055em; }
     .controls { display: grid; gap: 10px; margin: 0; }
-    .control { display: grid; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; box-shadow: 0 4px 14px rgba(40, 40, 48, 0.05); }
+    .control { display: grid; gap: 6px; background: #fff; border: 1px solid rgba(92, 89, 243, .18); border-radius: 16px; padding: 10px 12px; box-shadow: 0 6px 18px rgba(52, 49, 181, 0.06); }
     label { color: var(--muted); font-size: 12px; font-weight: 900; }
     select { width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; outline: 0; }
     .stack { display: grid; gap: 18px; width: 100%; }
-    .panel { width: 100%; padding: 20px; }
+    .panel { width: 100%; padding: 22px; background: rgba(255,255,255,.9); backdrop-filter: blur(10px); }
     .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
     .panel-title { flex: 1; }
     .section-filter { width: 240px; margin: 12px 0 14px; }
     h2 { margin: 0; font-size: 24px; letter-spacing: -0.035em; line-height: 1; }
     h3 { margin: 0 0 10px; font-size: 16px; letter-spacing: -0.02em; }
     .subtitle { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
-    .segment-number { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-right: 10px; border-radius: 11px; background: var(--indigo); color: #fff; font-size: 14px; font-weight: 900; vertical-align: middle; }
+    .segment-number { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-right: 10px; border-radius: 12px; background: linear-gradient(135deg, var(--indigo), var(--indigo-dark)); color: #fff; font-size: 14px; font-weight: 900; vertical-align: middle; box-shadow: 0 8px 16px rgba(92,89,243,.22); }
     .tag, .pill { display: inline-flex; width: fit-content; align-items: center; border-radius: 999px; padding: 6px 9px; font-size: 12px; font-weight: 900; white-space: nowrap; }
-    .neutral { color: var(--indigo); }
+    .neutral { color: var(--indigo-dark); }
     .good { color: var(--green-dark); background: var(--green-soft); }
-    .watch { color: #9b4a00; background: var(--orange-soft); }
+    .watch { color: #7a6900; background: var(--orange-soft); }
     .critical { color: var(--pink-dark); background: var(--pink-soft); }
     .value-neutral, .value-good, .value-watch, .value-critical { color: var(--ink); }
     .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .kpi { position: relative; padding: 16px; min-height: 128px; }
     .kpi.kpi-neutral { background: #fff; border-color: var(--line); }
-    .kpi.kpi-good { background: var(--green-soft); border-color: rgba(54, 121, 64, .35); }
-    .kpi.kpi-watch { background: var(--orange-soft); border-color: rgba(217, 120, 0, .35); }
-    .kpi.kpi-critical { background: var(--pink-soft); border-color: rgba(184, 0, 55, .35); }
+    .kpi.kpi-good { background: linear-gradient(180deg, #f6fff9, var(--green-soft)); border-color: rgba(34, 227, 158, .55); }
+    .kpi.kpi-watch { background: linear-gradient(180deg, #fffdf0, var(--orange-soft)); border-color: rgba(255, 242, 86, .95); }
+    .kpi.kpi-critical { background: linear-gradient(180deg, #fff6fa, var(--pink-soft)); border-color: rgba(255, 112, 155, .58); }
     .kpi .name { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; padding-right: 30px; }
     .kpi-subtitle { margin-top: 3px; color: var(--muted); font-size: 12px; }
     .kpi .number { margin: 12px 0 2px; font-size: 32px; font-weight: 900; letter-spacing: -0.05em; }
@@ -132,7 +133,7 @@
     .table-wrap { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
     table { width: 100%; border-collapse: collapse; min-width: 100%; font-size: 13px; }
     th, td { padding: 10px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-    th { color: var(--muted); background: var(--surface-soft); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
+    th { color: var(--indigo-dark); background: var(--surface-soft); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
     .th-help { position: relative; display: inline-flex; align-items: center; gap: 5px; }
     .th-help-btn { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 999px; background: #edf0f7; color: #6d7280; font-size: 11px; font-weight: 900; text-transform: none; letter-spacing: 0; cursor: help; }
     .th-help-pop { display: none; position: absolute; right: 0; top: 24px; z-index: 20; width: 260px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 12px 30px rgba(40,40,48,.16); padding: 11px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: none; line-height: 1.35; }
@@ -140,7 +141,7 @@
     tr:last-child td { border-bottom: 0; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
     code, .formula { font-family: var(--mono); }
-    .formula { display: inline-flex; border-radius: 12px; background: #282830; color: #fff; padding: 9px 11px; font-size: 12px; margin-bottom: 12px; }
+    .formula { display: inline-flex; border-radius: 14px; background: var(--indigo-dark); color: #fff; padding: 9px 11px; font-size: 12px; margin-bottom: 12px; }
     .service-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .service-card { position: relative; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 14px; min-height: 136px; }
     .service-card .label { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
@@ -162,7 +163,6 @@
     <header>
       <div class="eyebrow">Monthly reporting case</div>
       <h1>Alan Health Profitability Cockpit</h1>
-      <p>Dashboard output from the dataset model: exposure, earned premium, incurred claims, reserves, expenses and pricing expectations aggregated into monthly profitability views.</p>
     </header>
     <section class="global-filter" aria-label="Global dashboard filters">
       <div class="filter-title">Global filter</div>
@@ -172,15 +172,15 @@
     <div class="layout">
       <div class="stack">
       <section class="panel" id="executive">
-        <div class="panel-head"><div><h2><span class="segment-number">1</span>Executive Pulse</h2><p class="subtitle">Quick monthly answer: are we profitable, and are claims in line with pricing expectations?</p></div><span class="tag watch" id="pulseTag">Watch</span></div>
+        <div class="panel-head"><div><h2><span class="segment-number">1</span>Executive Pulse</h2></div><span class="tag watch" id="pulseTag">Watch</span></div>
         <div class="kpi-grid" id="kpis"></div>
         <div class="message-grid"><article class="card"><strong>Executive readout</strong><div class="readout-list"><p><strong>Are we on track?</strong><span id="msgTrack"></span></p><p><strong>What explains it?</strong><span id="msgWhy"></span></p><p><strong>Decision</strong><span id="msgDecision"></span></p></div></article></div>
       </section>
-      <section class="panel" id="exposure"><div class="panel-head"><div><h2><span class="segment-number">2</span>Exposure and Mix</h2><p class="subtitle">Who is covered, normalized by member-months, and where exposure is growing.</p></div><span class="tag neutral">Exposure spine</span></div><div class="two-col"><div class="donut-card"><h3>Member-month mix by product</h3><div class="donut-wrap" id="productDonut"></div></div><div><h3>Portfolio diagnostics</h3><div class="table-wrap"><table><thead><tr><th>Metric</th><th class="num">Value</th><th class="num">MoM evolution</th></tr></thead><tbody id="exposureTable"></tbody></table></div><div class="card" style="margin-top:14px"><strong>How to read it</strong><p>If higher-cover products grow faster than the rest of the portfolio, profitability can deteriorate even if pricing and claims behavior are stable. That is a mix effect.</p></div></div></div></section>
-      <section class="panel" id="segments"><div class="panel-head"><div class="panel-title"><h2><span class="segment-number">3</span>Profitability by Segment</h2><p class="subtitle">Dynamic segment view. Technical margin should be positive, but not interpreted as “the higher the better”: members and clients also pay for Alan’s service value, so margin must be sustainable without overpricing the experience.</p><div class="control section-filter"><label for="segmentType">Segment lens</label><select id="segmentType"><option value="product">Product</option><option value="client">Client type</option><option value="size">Company size</option><option value="age">Age band</option><option value="care">Care category</option><option value="maturity">Contract maturity</option></select></div></div><span class="tag neutral" id="segmentTag">Product lens</span></div><div class="table-wrap"><table><thead><tr><th>Segment</th><th class="num">Member-months</th><th class="num">Actual LR</th><th class="num">Expected LR</th><th class="num">A/E</th><th class="num">MoM LR movement</th><th class="num">Technical margin</th><th><span class="th-help">Status<span class="th-help-btn">?</span><span class="th-help-pop">Status is based on the LR gap: Actual LR minus Expected LR. Good = at or below expected. Watch = up to 3 pts above expected. Critical = more than 3 pts above expected.</span></span></th></tr></thead><tbody id="segmentRows"></tbody></table></div></section>
-      <section class="panel" id="claims"><div class="panel-head"><div><h2><span class="segment-number">4</span>Claims and Reserving Drivers</h2><p class="subtitle">Actual claims are shown on incurred basis, not paid-only basis.</p></div><span class="tag watch">Claims layer</span></div><div class="formula">incurred_claims = paid_claims_to_date + case_reserve + IBNR</div><div><h3>Portfolio reserving bridge</h3><p class="subtitle" style="margin-bottom:10px">Global claims maturity check: validates incurred claims completeness, not product attribution.</p><div class="bar-list" id="reserveBridge"></div></div><div style="margin-top:14px"><h3>Frequency / Severity</h3><div class="table-wrap"><table><thead><tr><th>Driver</th><th class="num">April</th><th class="num">MoM</th><th>Readout</th></tr></thead><tbody id="driverRows"></tbody></table></div></div><div style="margin-top:14px"><h3>Contribution to LR gap vs expected</h3><div><h3>Care category contribution</h3><div id="careContributionRows"></div></div><div style="margin-top:14px"><h3>Product mix contribution</h3><div id="productContributionRows"></div></div><div style="margin-top:14px"><h3>Contract maturity contribution</h3><div id="maturityContributionRows"></div></div><p class="subtitle">These contribution views explain why actual LR differs from expected LR. MoM remains a trend signal, but the control signal is gap versus pricing expectation.</p></div></section>
-      <section class="panel" id="serviceSignals"><div class="panel-head"><div><h2><span class="segment-number">5</span>Alan Service & Operating Signals</h2><p class="subtitle">Secondary Alan-specific layer: monitored as service quality and operating efficiency signals, not as direct proof of claims savings.</p></div><span class="tag neutral">Alan context</span></div><div class="service-grid" id="serviceSignalsGrid"></div></section>
-      <section class="panel" id="actionsPanel"><div class="panel-head"><div class="panel-title"><h2><span class="segment-number">6</span>Forecast and Actions</h2><p class="subtitle">Turn the monthly diagnosis into pricing, claims, product and data decisions.</p><div class="control section-filter"><label for="scenario">Scenario</label><select id="scenario"><option value="base">Base</option><option value="inflation">+5% claims inflation</option><option value="reserve">IBNR stress</option></select></div></div><span class="tag neutral">Decision layer</span></div><div><h3>Forecast</h3><div class="table-wrap"><table><thead><tr><th>Metric</th><th class="num">Value</th><th>Status</th></tr></thead><tbody id="forecastRows"></tbody></table></div></div><div style="margin-top:14px"><h3>Action log</h3><div class="action-list" id="actions"></div></div></section>
+      <section class="panel" id="exposure"><div class="panel-head"><div><h2><span class="segment-number">2</span>Exposure and Mix</h2></div><span class="tag neutral">Exposure spine</span></div><div class="two-col"><div class="donut-card"><h3>Member-month mix by product</h3><div class="donut-wrap" id="productDonut"></div></div><div><h3>Portfolio diagnostics</h3><div class="table-wrap"><table><thead><tr><th>Metric</th><th class="num">Value</th><th class="num">MoM evolution</th></tr></thead><tbody id="exposureTable"></tbody></table></div></div></div></section>
+      <section class="panel" id="segments"><div class="panel-head"><div class="panel-title"><h2><span class="segment-number">3</span>Profitability by Segment</h2><div class="control section-filter"><label for="segmentType">Segment lens</label><select id="segmentType"><option value="product">Product</option><option value="client">Client type</option><option value="size">Company size</option><option value="age">Age band</option><option value="care">Care category</option><option value="maturity">Contract maturity</option></select></div></div><span class="tag neutral" id="segmentTag">Product lens</span></div><div class="table-wrap"><table><thead><tr><th>Segment</th><th class="num">Member-months</th><th class="num">Actual LR</th><th class="num">Expected LR</th><th class="num">A/E</th><th class="num">MoM LR movement</th><th class="num">Technical margin</th><th><span class="th-help">Status<span class="th-help-btn">?</span><span class="th-help-pop">Status is based on the LR gap: Actual LR minus Expected LR. Good = at or below expected. Watch = up to 3 pts above expected. Critical = more than 3 pts above expected.</span></span></th></tr></thead><tbody id="segmentRows"></tbody></table></div></section>
+      <section class="panel" id="claims"><div class="panel-head"><div><h2><span class="segment-number">4</span>Claims and Reserving Drivers</h2></div><span class="tag watch">Claims layer</span></div><div class="formula">incurred_claims = paid_claims_to_date + case_reserve + IBNR</div><div><h3>Portfolio reserving bridge</h3><div class="bar-list" id="reserveBridge"></div></div><div style="margin-top:14px"><h3>Frequency / Severity</h3><div class="table-wrap"><table><thead><tr><th>Driver</th><th class="num">April</th><th class="num">MoM</th><th>Readout</th></tr></thead><tbody id="driverRows"></tbody></table></div></div><div style="margin-top:14px"><h3>Contribution to LR gap vs expected</h3><div><h3>Care category contribution</h3><div id="careContributionRows"></div></div><div style="margin-top:14px"><h3>Product mix contribution</h3><div id="productContributionRows"></div></div><div style="margin-top:14px"><h3>Contract maturity contribution</h3><div id="maturityContributionRows"></div></div></div></section>
+      <section class="panel" id="serviceSignals"><div class="panel-head"><div><h2><span class="segment-number">5</span>Alan Service & Operating Signals</h2></div><span class="tag neutral">Alan context</span></div><div class="service-grid" id="serviceSignalsGrid"></div></section>
+      <section class="panel" id="actionsPanel"><div class="panel-head"><div class="panel-title"><h2><span class="segment-number">6</span>Forecast and Actions</h2><div class="control section-filter"><label for="scenario">Scenario</label><select id="scenario"><option value="base">Base</option><option value="inflation">+5% claims inflation</option><option value="reserve">IBNR stress</option></select></div></div><span class="tag neutral">Decision layer</span></div><div><h3>Forecast</h3><div class="table-wrap"><table><thead><tr><th>Metric</th><th class="num">Value</th><th>Status</th></tr></thead><tbody id="forecastRows"></tbody></table></div></div><div style="margin-top:14px"><h3>Action log</h3><div class="action-list" id="actions"></div></div></section>
       </div>
     </div>
   </main>
@@ -215,9 +215,9 @@
       const contributionTone=value=>Math.abs(value)<0.15?'neutral':value>0?'critical':'good';
       const contributionBar=row=>{const value=row[2];const width=Math.max(6,Math.abs(value)/maxContributionGap*100);const direction=value<0?'negative':'positive';return {width,direction,tone:contributionTone(value)};};
 
-      document.getElementById('careContributionRows').innerHTML=`<div class="diverging-chart">${careImpact.map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>Claims MoM ${r[1]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div><p class="subtitle" style="margin-top:8px">All LR gap contribution charts use the same scale. Grey = not significant, yellow = favorable versus expected, red = adverse versus expected. IBNR is handled in the reserving bridge, not as a care category.</p>`;
-      document.getElementById('productContributionRows').innerHTML=`<div class="diverging-chart">${productGroups.map(group=>`<div class="diverging-group"><div class="diverging-group-title">${group[0]}</div>${group[1].map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>MoM mix ${r[1]} · A/E ${r[3]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div>`).join('')}</div><p class="subtitle" style="margin-top:8px">A/E remains the pricing adequacy signal; bars use the same scale as care category and maturity contributions.</p>`;
-      document.getElementById('maturityContributionRows').innerHTML=`<div class="diverging-chart">${maturityImpact.map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>Exposure MoM ${r[1]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div><p class="subtitle" style="margin-top:8px">Exposure MoM is context; the bar shows whether the maturity bucket is above or below expected LR on the common scale.</p>`;
+      document.getElementById('careContributionRows').innerHTML=`<div class="diverging-chart">${careImpact.map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>Claims MoM ${r[1]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div><p class="subtitle" style="margin-top:8px">Common scale: grey neutral, yellow favorable, pink adverse.</p>`;
+      document.getElementById('productContributionRows').innerHTML=`<div class="diverging-chart">${productGroups.map(group=>`<div class="diverging-group"><div class="diverging-group-title">${group[0]}</div>${group[1].map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>MoM mix ${r[1]} · A/E ${r[3]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div>`).join('')}</div><p class="subtitle" style="margin-top:8px">Common scale with care and maturity; A/E stays as context.</p>`;
+      document.getElementById('maturityContributionRows').innerHTML=`<div class="diverging-chart">${maturityImpact.map(r=>{const bar=contributionBar(r);return `<div class="diverging-row"><div class="diverging-label"><strong>${r[0]}</strong><span>Exposure MoM ${r[1]}</span></div><div class="diverging-track"><div class="diverging-bar ${bar.direction} ${bar.tone}" style="width:${bar.width}%"></div></div><strong class="num">${fmtPts(r[2])}</strong></div>`}).join('')}</div><p class="subtitle" style="margin-top:8px">Common scale with care and product mix.</p>`;
     }
     function renderServiceSignals(d){const rows=[['Cost-to-serve PMPM','€3.7','Direct service and claims operations cost per member-month.','(care operations + claims ops + support cost) / member-months','Shows whether Alan scales operationally as membership grows.','↓ MoM -€0.2'],['Automation rate','65%','Share of service or claims tasks handled without manual intervention.','automated tasks / total eligible tasks','Higher automation should reduce cost-to-serve without damaging service quality.','↑ MoM +3 pts'],['Care navigation usage',fmtPct(d.service),'Leading signal for better care orientation, not causal savings proof.','members using care navigation / active members','Useful leading indicator, but claims savings require controlled cohort analysis.','↑ MoM +0.7 pts'],['Fast reimbursement','89%','Share of reimbursements processed within target service time.','reimbursements within SLA / total reimbursements','Service quality metric to monitor alongside operating efficiency.','↑ MoM +2 pts']];document.getElementById('serviceSignalsGrid').innerHTML=rows.map((r,i)=>`<article class="service-card"><button class="info-btn service-info-btn" type="button" data-service-info="${i}" aria-label="Explain ${r[0]}">?</button><div class="info-pop" id="service-info-${i}"><strong>${r[0]}</strong><p>${r[2]}</p><code>${r[3]}</code><p>${r[4]}</p></div><div class="label">${r[0]}</div><div class="value">${r[1]}</div><p>${r[2]}</p><span class="mom-text mom">${r[5]}</span></article>`).join('');document.querySelectorAll('.service-info-btn').forEach(btn=>btn.addEventListener('click',event=>{event.stopPropagation();const pop=document.getElementById(`service-info-${btn.dataset.serviceInfo}`);document.querySelectorAll('.info-pop').forEach(p=>{if(p!==pop)p.classList.remove('visible')});pop.classList.toggle('visible')}));}
     function renderForecast(d){const rows=[['Year-end expected LR',fmtPct(d.forecastLR),cls(d.forecastLR-d.expectedLR)],['Full-year technical margin',fmtMoney(d.technical*12),'good'],['+5% claims inflation LR',fmtPct((d.incurred*1.05)/d.earned),cls((d.incurred*1.05)/d.earned-d.expectedLR)],['IBNR stress LR',fmtPct((d.paid+d.caseReserve+d.ibnr*1.25)/d.earned),cls((d.paid+d.caseReserve+d.ibnr*1.25)/d.earned-d.expectedLR)]];document.getElementById('forecastRows').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td><span class="pill ${r[2]}">${statusLabel(r[2])}</span></td></tr>`).join('');document.getElementById('actions').innerHTML=actions.map(a=>`<div class="action"><div class="owner">${a[0]}</div><div><strong>${a[1]}</strong><span>${a[2]}</span></div><span class="pill ${a[3]}">${statusLabel(a[3])}</span></div>`).join('');}
