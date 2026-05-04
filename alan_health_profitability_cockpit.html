@@ -6,12 +6,13 @@
   <title>Alan Health Profitability Cockpit</title>
   <style>
     :root {
-      --bg: #fbf7ef;
+      --bg: #fbf5eb;
       --surface: #ffffff;
-      --surface-soft: #f2f0ff;
-      --ink: #282830;
-      --muted: #656779;
-      --line: #e6e0f4;
+      --surface-soft: #f4f1ff;
+      --cream: #fff8ed;
+      --ink: #242431;
+      --muted: #696a7d;
+      --line: #e9e2f2;
       --indigo: #5c59f3;
       --indigo-dark: #3431b5;
       --green: #22e39e;
@@ -22,17 +23,17 @@
       --pink: #ff709b;
       --pink-dark: #b80037;
       --pink-soft: #ffe7f0;
-      --shadow: 0 18px 45px rgba(52, 49, 181, 0.10);
-      --radius: 24px;
+      --shadow: 0 22px 55px rgba(52, 49, 181, 0.11);
+      --radius: 28px;
       --mono: "SF Mono", Menlo, Consolas, monospace;
       --sans: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: radial-gradient(circle at 8% 4%, rgba(34, 227, 158, .26), transparent 28%), radial-gradient(circle at 92% 0%, rgba(255, 242, 86, .38), transparent 24%), linear-gradient(180deg, #fbf7ef 0%, #f7f5ff 48%, #fbf7ef 100%); font-family: var(--sans); line-height: 1.35; }
-    .page { width: calc(100vw - 32px); max-width: 1440px; margin: 0 auto; padding: 28px 0 56px; }
+    body { margin: 0; color: var(--ink); background: radial-gradient(circle at 8% 4%, rgba(34, 227, 158, .30), transparent 25%), radial-gradient(circle at 92% 2%, rgba(255, 242, 86, .56), transparent 24%), radial-gradient(circle at 70% 42%, rgba(255, 112, 155, .14), transparent 22%), linear-gradient(180deg, #fbf5eb 0%, #f7f3ff 48%, #fbf5eb 100%); font-family: var(--sans); line-height: 1.35; }
+    .page { width: calc(100vw - 32px); max-width: 1440px; margin: 0 auto; padding: 26px 0 64px; }
     .page > header, .page > .global-filter, .layout, .stack, .stack > .panel { width: 100%; max-width: 100%; justify-self: stretch; }
     .layout { position: relative; width: 100%; }
-    .global-filter { display: flex; align-items: center; gap: 12px; width: 100%; margin: -2px 0 18px; flex-wrap: wrap; padding: 10px 12px; border: 1px solid rgba(92, 89, 243, .18); border-radius: 18px; background: rgba(255,255,255,.72); backdrop-filter: blur(10px); box-shadow: 0 12px 28px rgba(52, 49, 181, .07); }
+    .global-filter { display: flex; align-items: center; gap: 12px; width: 100%; margin: -2px 0 18px; flex-wrap: wrap; padding: 12px; border: 1px solid rgba(92, 89, 243, .16); border-radius: 22px; background: rgba(255,255,255,.76); backdrop-filter: blur(14px); box-shadow: 0 14px 34px rgba(52, 49, 181, .08); }
     .global-filter .control { width: 210px; }
     .filter-title { color: var(--indigo-dark); font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
     .legend { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 14px; font-weight: 800; margin-left: auto; }
@@ -43,34 +44,43 @@
     .legend .dot-watch { background: #d1b700; }
     .legend .dot-critical { background: var(--pink-dark); }
     header, .panel, .kpi, .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-    header { position: relative; overflow: hidden; width: 100%; padding: 34px; margin-bottom: 18px; color: #fff; border: 0; background: radial-gradient(circle at 82% 18%, rgba(255, 242, 86, .95), transparent 18%), radial-gradient(circle at 78% 78%, rgba(34, 227, 158, .72), transparent 22%), linear-gradient(135deg, #3431b5 0%, #5c59f3 58%, #726fff 100%); }
-    header::after { content: ""; position: absolute; right: -70px; bottom: -80px; width: 280px; height: 280px; border-radius: 999px; border: 34px solid rgba(255,255,255,.18); }
+    header { position: relative; overflow: hidden; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: end; padding: 40px; margin-bottom: 18px; color: #fff; border: 0; background: radial-gradient(circle at 80% 20%, rgba(255, 242, 86, .96), transparent 17%), radial-gradient(circle at 88% 88%, rgba(34, 227, 158, .78), transparent 21%), linear-gradient(135deg, #3431b5 0%, #5c59f3 58%, #7775ff 100%); }
+    header::after { content: ""; position: absolute; right: -76px; bottom: -92px; width: 310px; height: 310px; border-radius: 999px; border: 38px solid rgba(255,255,255,.16); }
+    header::before { content: ""; position: absolute; left: 44%; top: -90px; width: 220px; height: 220px; border-radius: 56px; background: rgba(255,255,255,.10); transform: rotate(18deg); }
+    .hero-copy, .hero-card { position: relative; z-index: 1; }
+    .hero-card { display: grid; gap: 12px; padding: 18px; border: 1px solid rgba(255,255,255,.28); border-radius: 26px; background: rgba(255,255,255,.16); box-shadow: inset 0 1px 0 rgba(255,255,255,.22); backdrop-filter: blur(14px); }
+    .hero-card .hero-kicker { color: rgba(255,255,255,.70); font-size: 11px; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+    .hero-card strong { font-size: 36px; line-height: .9; letter-spacing: -.05em; }
+    .hero-card span { color: rgba(255,255,255,.78); font-size: 13px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .hero-meta span { border: 1px solid rgba(255,255,255,.30); border-radius: 999px; background: rgba(255,255,255,.14); padding: 8px 11px; color: rgba(255,255,255,.86); font-size: 12px; font-weight: 900; }
     .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-    .nav a { display: inline-flex; border: 1px solid rgba(92, 89, 243, .22); border-radius: 999px; padding: 9px 13px; color: var(--indigo-dark); background: rgba(255,255,255,.78); font-size: 12px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 22px rgba(52,49,181,.08); }
+    .nav a { display: inline-flex; border: 1px solid rgba(92, 89, 243, .22); border-radius: 999px; padding: 10px 14px; color: var(--indigo-dark); background: rgba(255,255,255,.84); font-size: 12px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 22px rgba(52,49,181,.08); }
     .eyebrow { position: relative; z-index: 1; color: rgba(255,255,255,.78); font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
-    h1 { position: relative; z-index: 1; margin: 0; max-width: 980px; font-size: clamp(38px, 5.5vw, 70px); line-height: 0.94; letter-spacing: -0.055em; }
-    header p { position: relative; z-index: 1; max-width: 760px; margin: 16px 0 0; color: rgba(255,255,255,.82); font-size: 18px; }
+    h1 { position: relative; z-index: 1; margin: 0; max-width: 880px; font-size: clamp(42px, 6vw, 76px); line-height: 0.92; letter-spacing: -0.06em; }
+    header p { position: relative; z-index: 1; max-width: 760px; margin: 16px 0 0; color: rgba(255,255,255,.84); font-size: 19px; }
     .controls { display: grid; gap: 10px; margin: 0; }
     .control { display: grid; gap: 6px; background: #fff; border: 1px solid rgba(92, 89, 243, .18); border-radius: 16px; padding: 10px 12px; box-shadow: 0 6px 18px rgba(52, 49, 181, 0.06); }
     label { color: var(--muted); font-size: 12px; font-weight: 900; }
     select { width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; outline: 0; }
-    .stack { display: grid; gap: 18px; width: 100%; }
-    .panel { width: 100%; padding: 22px; background: rgba(255,255,255,.9); backdrop-filter: blur(10px); }
-    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+    .stack { display: grid; gap: 20px; width: 100%; }
+    .panel { position: relative; overflow: hidden; width: 100%; padding: 24px; background: rgba(255,255,255,.91); backdrop-filter: blur(12px); }
+    .panel::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: linear-gradient(90deg, var(--indigo), var(--green), var(--orange), var(--pink)); opacity: .82; }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
     .panel-title { flex: 1; }
     .section-filter { width: 240px; margin: 12px 0 14px; }
-    h2 { margin: 0; font-size: 24px; letter-spacing: -0.035em; line-height: 1; }
+    h2 { margin: 0; font-size: 27px; letter-spacing: -0.045em; line-height: 1; }
     h3 { margin: 0 0 10px; font-size: 16px; letter-spacing: -0.02em; }
-    .subtitle { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    .subtitle { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
     .segment-number { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-right: 10px; border-radius: 12px; background: linear-gradient(135deg, var(--indigo), var(--indigo-dark)); color: #fff; font-size: 14px; font-weight: 900; vertical-align: middle; box-shadow: 0 8px 16px rgba(92,89,243,.22); }
-    .tag, .pill { display: inline-flex; width: fit-content; align-items: center; border-radius: 999px; padding: 6px 9px; font-size: 12px; font-weight: 900; white-space: nowrap; }
+    .tag, .pill { display: inline-flex; width: fit-content; align-items: center; border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 900; white-space: nowrap; }
     .neutral { color: var(--indigo-dark); }
     .good { color: var(--green-dark); background: var(--green-soft); }
     .watch { color: #7a6900; background: var(--orange-soft); }
     .critical { color: var(--pink-dark); background: var(--pink-soft); }
     .value-neutral, .value-good, .value-watch, .value-critical { color: var(--ink); }
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-    .kpi { position: relative; padding: 16px; min-height: 128px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .kpi { position: relative; padding: 17px; min-height: 132px; border-radius: 22px; }
     .kpi.kpi-neutral { background: #fff; border-color: var(--line); }
     .kpi.kpi-good { background: linear-gradient(180deg, #f6fff9, var(--green-soft)); border-color: rgba(34, 227, 158, .55); }
     .kpi.kpi-watch { background: linear-gradient(180deg, #fffdf0, var(--orange-soft)); border-color: rgba(255, 242, 86, .95); }
@@ -92,12 +102,12 @@
     .readout-list { display: grid; gap: 8px; }
     .readout-list p { margin: 0; color: var(--muted); font-size: 13px; }
     .readout-list strong { display: inline; margin-right: 6px; color: var(--ink); }
-    .card { padding: 14px; box-shadow: none; }
+    .card { padding: 16px; box-shadow: none; border-radius: 22px; }
     .card strong { display: block; margin-bottom: 6px; }
     .card p { margin: 0; color: var(--muted); font-size: 13px; }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .mix-layout { display: grid; grid-template-columns: 360px 1fr; gap: 14px; align-items: start; }
-    .donut-card { position: relative; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 14px; }
+    .donut-card { position: relative; border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(180deg, #fff, var(--cream)); padding: 16px; }
     .donut-wrap { display: grid; gap: 12px; justify-items: center; }
     .donut-legend { display: grid; gap: 8px; font-size: 12px; width: 100%; }
     .donut-legend span { display: flex; gap: 8px; align-items: center; justify-content: space-between; color: var(--muted); }
@@ -116,7 +126,7 @@
     .bridge-legend { display: grid; gap: 7px; font-size: 12px; }
     .bridge-legend span { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); }
     .bridge-legend i { width: 12px; height: 12px; border-radius: 999px; display: inline-flex; margin-right: 6px; vertical-align: -1px; }
-    .diverging-chart { display: grid; gap: 10px; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 12px; }
+    .diverging-chart { display: grid; gap: 10px; border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(180deg, #fff, #fffaf2); padding: 14px; }
     .diverging-group { display: grid; gap: 10px; }
     .diverging-group + .diverging-group { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
     .diverging-group-title { color: var(--indigo); font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
@@ -131,7 +141,7 @@
     .diverging-bar.critical { background: var(--pink); }
     .diverging-bar.good { background: var(--orange); }
     .diverging-bar.neutral { background: #c9d1e7; }
-    .table-wrap { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .table-wrap { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.9); }
     table { width: 100%; border-collapse: collapse; min-width: 100%; font-size: 13px; }
     th, td { padding: 10px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
     th { color: var(--indigo-dark); background: var(--surface-soft); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -144,27 +154,31 @@
     code, .formula { font-family: var(--mono); }
     .formula { display: inline-flex; border-radius: 14px; background: var(--indigo-dark); color: #fff; padding: 9px 11px; font-size: 12px; margin-bottom: 12px; }
     .service-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-    .service-card { position: relative; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 14px; min-height: 136px; }
+    .service-card { position: relative; border: 1px solid var(--line); border-radius: 22px; background: #fff; padding: 16px; min-height: 136px; }
     .service-card .label { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
     .service-card .value { margin: 8px 0; font-size: 28px; font-weight: 900; letter-spacing: -.04em; }
     .service-card p { margin: 0; color: var(--muted); font-size: 12px; }
     .service-card .mom { display: inline-flex; margin-top: 10px; }
     .action-list { display: grid; gap: 10px; }
-    .action { display: grid; grid-template-columns: 90px 1fr auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 12px; }
+    .action { display: grid; grid-template-columns: 90px 1fr auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 20px; background: #fff; padding: 13px; }
     .owner { color: var(--indigo); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
     .action strong { display: block; font-size: 13px; }
     .action span { color: var(--muted); font-size: 12px; }
-    @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col, .mix-layout { grid-template-columns: 1fr; } .panel-head { flex-direction: column; } }
-    @media (max-width: 640px) { .page { width: min(100% - 18px, 1320px); padding-top: 12px; } header, .panel { padding: 16px; border-radius: 14px; } .kpi-grid, .service-grid { grid-template-columns: 1fr; } .bar-row, .action { grid-template-columns: 1fr; } h1 { font-size: 38px; } }
+    @media (max-width: 1100px) { header { grid-template-columns: 1fr; } .hero-card { max-width: 360px; } .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col, .mix-layout { grid-template-columns: 1fr; } .panel-head { flex-direction: column; } }
+    @media (max-width: 640px) { .page { width: min(100% - 18px, 1320px); padding-top: 12px; } header, .panel { padding: 18px; border-radius: 20px; } .hero-meta { gap: 6px; } .kpi-grid, .service-grid { grid-template-columns: 1fr; } .bar-row, .action, .diverging-row { grid-template-columns: 1fr; } h1 { font-size: 40px; } }
   </style>
 </head>
 <body>
   <main class="page">
     <nav class="nav"><a href="alan_health_dataset_model.html">Dataset Model</a></nav>
     <header>
-      <div class="eyebrow">Monthly reporting case</div>
-      <h1>Alan Health Profitability Cockpit</h1>
-      <p>Monthly health profitability view for exposure, claims, pricing adequacy, service economics and actions.</p>
+      <div class="hero-copy">
+        <div class="eyebrow">Monthly reporting case</div>
+        <h1>Alan Health Profitability Cockpit</h1>
+        <p>Monthly health profitability view for exposure, claims, pricing adequacy, service economics and actions.</p>
+        <div class="hero-meta"><span>April 2026</span><span>Health insurance</span><span>Actuarial cockpit</span></div>
+      </div>
+      <div class="hero-card"><div class="hero-kicker">Executive signal</div><strong>103%</strong><span>Actual over expected claims, with dental severity and IBNR as main checks.</span></div>
     </header>
     <section class="global-filter" aria-label="Global dashboard filters">
       <div class="filter-title">Global filter</div>
