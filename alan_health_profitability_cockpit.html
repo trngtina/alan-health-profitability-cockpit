@@ -40,7 +40,6 @@
     .layout { position: relative; width: 100%; }
     .global-filter { display: flex; align-items: center; gap: 14px; width: 100%; margin: 0 0 24px; flex-wrap: wrap; padding: 14px 16px; border: 1px solid rgba(36,36,49,.06); border-radius: 24px; background: rgba(255,253,248,.92); box-shadow: none; }
     .global-filter .control { width: 210px; }
-    .filter-title { color: var(--indigo-dark); font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
     .legend { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 14px; font-weight: 800; margin-left: auto; }
     .legend strong { color: var(--ink); font-size: 14px; font-weight: 900; }
     .legend span { display: inline-flex; align-items: center; gap: 5px; }
@@ -55,8 +54,10 @@
     .hero-copy, .hero-visual { position: relative; z-index: 1; }
     .hero-copy { max-width: 770px; }
     .hero-controls { position: relative; z-index: 1; display: grid; justify-items: stretch; gap: 12px; margin-top: 22px; max-width: 760px; }
-    header .global-filter { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-    header .global-filter .control { background: rgba(255,255,255,.78); }
+    header .global-filter { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; justify-content: flex-start; }
+    header .global-filter .control { order: -1; width: 176px; background: var(--indigo); border-color: transparent; color: #fff; }
+    header .global-filter .control label, header .global-filter .control select { color: #fff; }
+    header .global-filter .control select { font-weight: 900; }
 
     .hero-visual { min-height: 300px; display: grid; place-items: center; }
     .hero-blob { position: absolute; inset: 28px 0 16px 46px; border-radius: 40px; background: var(--orange); }
@@ -190,7 +191,7 @@
         <img class="hero-logo" src="Alan_assets/alan_logo_header.png" alt="Alan" />
         <h1>Monthly Health Profitability</h1>
         <p>A monthly cockpit to read insurance balance, service economics and next actions with Alan-level clarity.</p>
-        <div class="hero-controls"><section class="global-filter" aria-label="Global dashboard filters"><div class="filter-title">Global filter</div><div class="control"><label for="month">Month</label><select id="month"><option>Apr 2026</option><option>Mar 2026</option><option>Feb 2026</option></select></div><div class="legend" aria-label="Status legend"><strong>Status</strong><span><i></i>Neutral</span><span><i class="dot-good"></i>Good</span><span><i class="dot-watch"></i>Watch</span><span><i class="dot-critical"></i>Critical</span></div></section></div>
+        <div class="hero-controls"><section class="global-filter" aria-label="Global dashboard filters"><div class="control"><label for="month">Month</label><select id="month"><option>Apr 2026</option><option>Mar 2026</option><option>Feb 2026</option></select></div><div class="legend" aria-label="Status legend"><strong>Status</strong><span><i></i>Neutral</span><span><i class="dot-good"></i>Good</span><span><i class="dot-watch"></i>Watch</span><span><i class="dot-critical"></i>Critical</span></div></section></div>
       </div>
       <div class="hero-visual" aria-label="Alan app inspired illustration">
         <div class="hero-blob"></div>
