@@ -49,20 +49,24 @@
     .legend .dot-watch { background: #d1b700; }
     .legend .dot-critical { background: var(--pink-dark); }
     header, .panel, .kpi, .card { background: var(--surface); border: 1px solid rgba(36,36,49,.06); border-radius: var(--radius); box-shadow: var(--shadow); }
-    header { position: relative; overflow: hidden; width: 100%; display: grid; grid-template-columns: minmax(0, .98fr) minmax(360px, .72fr); gap: 42px; align-items: center; padding: 62px 64px; margin-bottom: 24px; color: var(--ink); border: 0; background: #fff7e8; }
+    header { position: relative; overflow: hidden; width: 100%; display: grid; grid-template-columns: minmax(0, .98fr) minmax(320px, .58fr); gap: 32px; align-items: center; padding: 38px 46px; margin-bottom: 18px; color: var(--ink); border: 0; background: #fff7e8; }
     header::before { content: ""; position: absolute; right: -120px; top: -140px; width: 430px; height: 430px; border-radius: 999px; background: var(--yellow); }
     header::after { content: ""; position: absolute; right: 250px; bottom: -150px; width: 300px; height: 300px; border-radius: 88px; background: var(--green); transform: rotate(16deg); }
     .hero-copy, .hero-visual { position: relative; z-index: 1; }
     .hero-copy { max-width: 770px; }
-    .hero-visual { min-height: 390px; display: grid; place-items: center; }
-    .hero-blob { position: absolute; inset: 34px 0 18px 42px; border-radius: 44px; background: var(--orange); }
+    .hero-controls { position: relative; z-index: 1; display: grid; justify-items: stretch; gap: 12px; margin-top: 22px; max-width: 760px; }
+    header .global-filter { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    header .global-filter .control { background: rgba(255,255,255,.78); }
+
+    .hero-visual { min-height: 300px; display: grid; place-items: center; }
+    .hero-blob { position: absolute; inset: 28px 0 16px 46px; border-radius: 40px; background: var(--orange); }
     .hero-blob::after { content: ""; position: absolute; right: -36px; top: 34px; width: 112px; height: 112px; border-radius: 999px; background: var(--pink); }
-    .hero-device { position: relative; z-index: 1; width: min(94%, 440px); transform: rotate(-4deg); filter: drop-shadow(0 28px 38px rgba(36,36,49,.18)); }
+    .hero-device { position: relative; z-index: 1; width: min(86%, 340px); transform: rotate(-4deg); filter: drop-shadow(0 22px 30px rgba(36,36,49,.16)); }
     .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
     .nav a { display: inline-flex; border: 1px solid rgba(92,89,243,.18); border-radius: 999px; padding: 10px 14px; color: var(--indigo-dark); background: var(--surface); font-size: 12px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 28px rgba(36,36,49,.06); }
-    .hero-logo { display: block; width: 112px; height: auto; margin-bottom: 20px; }
-    h1 { position: relative; z-index: 1; margin: 0; max-width: 760px; font-size: clamp(44px, 6.4vw, 78px); line-height: 0.98; letter-spacing: -0.052em; font-weight: 600; }
-    header p { position: relative; z-index: 1; max-width: 680px; margin: 20px 0 0; color: var(--muted); font-size: 20px; line-height: 1.45; }
+    .hero-logo { display: block; width: 104px; height: auto; margin-bottom: 18px; }
+    h1 { position: relative; z-index: 1; margin: 0; max-width: 760px; font-size: clamp(40px, 5.4vw, 66px); line-height: 0.98; letter-spacing: -0.052em; font-weight: 600; }
+    header p { position: relative; z-index: 1; max-width: 650px; margin: 16px 0 0; color: var(--muted); font-size: 18px; line-height: 1.42; }
     .controls { display: grid; gap: 10px; margin: 0; }
     .control { display: grid; gap: 7px; background: #fff; border: 1px solid rgba(36,36,49,.06); border-radius: 16px; padding: 11px 13px; box-shadow: none; }
     label { color: var(--muted); font-size: 12px; font-weight: 900; }
@@ -174,8 +178,8 @@
     .owner { color: var(--indigo); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
     .action strong { display: block; font-size: 13px; }
     .action span { color: var(--muted); font-size: 12px; }
-    @media (max-width: 1100px) { header { grid-template-columns: 1fr; } .hero-visual { min-height: 320px; } .hero-device { max-width: 360px; } .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col, .mix-layout { grid-template-columns: 1fr; } .panel-head { flex-direction: column; } }
-    @media (max-width: 640px) { .page { width: min(100% - 18px, 1320px); padding-top: 12px; } header, .panel { padding: 20px; border-radius: 22px; } .hero-visual { min-height: 250px; } .kpi-grid, .service-grid { grid-template-columns: 1fr; } .bar-row, .action, .diverging-row { grid-template-columns: 1fr; } h1 { font-size: 42px; } }
+    @media (max-width: 1100px) { header { grid-template-columns: 1fr; } .hero-visual { min-height: 280px; } .hero-device { max-width: 320px; } .hero-controls { align-items: flex-start; } .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col, .mix-layout { grid-template-columns: 1fr; } .panel-head { flex-direction: column; } }
+    @media (max-width: 640px) { .page { width: min(100% - 18px, 1320px); padding-top: 12px; } header, .panel { padding: 20px; border-radius: 22px; } .hero-visual { min-height: 230px; } .hero-controls { margin-top: 18px; } .global-filter { align-items: flex-start; } .legend { margin-left: 0; } .kpi-grid, .service-grid { grid-template-columns: 1fr; } .bar-row, .action, .diverging-row { grid-template-columns: 1fr; } h1 { font-size: 42px; } }
   </style>
 </head>
 <body>
@@ -186,17 +190,13 @@
         <img class="hero-logo" src="Alan_assets/alan_logo_header.png" alt="Alan" />
         <h1>Monthly Health Profitability</h1>
         <p>A monthly cockpit to read insurance balance, service economics and next actions with Alan-level clarity.</p>
+        <div class="hero-controls"><section class="global-filter" aria-label="Global dashboard filters"><div class="filter-title">Global filter</div><div class="control"><label for="month">Month</label><select id="month"><option>Apr 2026</option><option>Mar 2026</option><option>Feb 2026</option></select></div><div class="legend" aria-label="Status legend"><strong>Status</strong><span><i></i>Neutral</span><span><i class="dot-good"></i>Good</span><span><i class="dot-watch"></i>Watch</span><span><i class="dot-critical"></i>Critical</span></div></section></div>
       </div>
       <div class="hero-visual" aria-label="Alan app inspired illustration">
         <div class="hero-blob"></div>
         <img class="hero-device" src="Alan_assets/marmot_phone.png" alt="Alan app visual" />
       </div>
     </header>
-    <section class="global-filter" aria-label="Global dashboard filters">
-      <div class="filter-title">Global filter</div>
-      <div class="control"><label for="month">Month</label><select id="month"><option>Apr 2026</option><option>Mar 2026</option><option>Feb 2026</option></select></div>
-      <div class="legend" aria-label="Status legend"><strong>Status</strong><span><i></i>Neutral</span><span><i class="dot-good"></i>Good</span><span><i class="dot-watch"></i>Watch</span><span><i class="dot-critical"></i>Critical</span></div>
-    </section>
     <div class="layout">
       <div class="stack">
       <section class="panel" id="executive">
