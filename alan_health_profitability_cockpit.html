@@ -87,7 +87,7 @@
     .value-neutral, .value-good, .value-watch, .value-critical { color: var(--ink); }
     .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
     .kpi { position: relative; overflow: hidden; padding: 20px; min-height: 146px; border-radius: 26px; box-shadow: none; }
-    .kpi::after { content: ""; position: absolute; right: -20px; bottom: -24px; width: 82px; height: 82px; border-radius: 999px; background: rgba(255,255,255,.46); }
+    .kpi::after { display: none; }
     .kpi.kpi-neutral { background: #fff; border-color: rgba(36,36,49,.08); }
     .kpi.kpi-good { background: var(--green-soft); border-color: rgba(34,227,158,.55); }
     .kpi.kpi-watch { background: var(--yellow-soft); border-color: rgba(209,183,0,.34); }
