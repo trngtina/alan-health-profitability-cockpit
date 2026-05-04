@@ -48,21 +48,16 @@
     .legend .dot-watch { background: #d1b700; }
     .legend .dot-critical { background: var(--pink-dark); }
     header, .panel, .kpi, .card { background: var(--surface); border: 1px solid rgba(36,36,49,.06); border-radius: var(--radius); box-shadow: var(--shadow); }
-    header { position: relative; overflow: hidden; width: 100%; display: grid; grid-template-columns: minmax(0, .98fr) minmax(320px, .58fr); gap: 32px; align-items: center; padding: 38px 46px; margin-bottom: 18px; color: var(--ink); border: 0; background: radial-gradient(circle at 8% 0%, rgba(255, 224, 191, .82), transparent 20rem), radial-gradient(circle at 86% 4%, rgba(214, 219, 255, .90), transparent 22rem), linear-gradient(145deg, rgba(255,255,255,.98), rgba(248,249,255,.98)); backdrop-filter: blur(18px); }
+    header { position: relative; overflow: hidden; width: 100%; display: block; padding: 38px 46px; margin-bottom: 18px; color: var(--ink); border: 0; background: radial-gradient(circle at 8% 0%, rgba(255, 224, 191, .82), transparent 20rem), radial-gradient(circle at 86% 4%, rgba(214, 219, 255, .90), transparent 22rem), linear-gradient(145deg, rgba(255,255,255,.98), rgba(248,249,255,.98)); backdrop-filter: blur(18px); }
     header::before { content: ""; position: absolute; left: -18%; top: -48%; width: 76%; height: 72%; border-radius: 0 0 100% 0; background: linear-gradient(135deg, rgba(255,224,191,.64), rgba(255,240,223,.12)); transform: rotate(-5deg); }
     header::after { content: ""; position: absolute; right: -92px; top: -104px; width: 390px; height: 390px; border-radius: 42% 58% 51% 49%; background: conic-gradient(from 210deg, var(--indigo), #d6dbff, #ffe0bf, #7a77ff, var(--indigo)); opacity: .20; filter: blur(1px); }
-    .hero-copy, .hero-visual { position: relative; z-index: 1; }
-    .hero-copy { max-width: 770px; }
+    .hero-copy { position: relative; z-index: 1; max-width: 820px; }
     .hero-controls { position: relative; z-index: 1; display: grid; justify-items: stretch; gap: 12px; margin-top: 22px; max-width: 760px; }
     header .global-filter { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; justify-content: flex-start; }
     header .global-filter .control { order: -1; width: 176px; background: rgba(255,255,255,.78); border-color: rgba(36,36,49,.06); }
     header .global-filter .control label { color: var(--muted); }
     header .global-filter .control select { color: var(--indigo); font-weight: 900; }
 
-    .hero-visual { min-height: 300px; display: grid; place-items: center; }
-    .hero-blob { position: absolute; inset: 28px 0 16px 46px; border-radius: 40px; background: linear-gradient(145deg, rgba(255,240,223,.98), rgba(235,234,255,.98)); box-shadow: inset 0 0 0 1px rgba(109,107,255,.08); }
-    .hero-blob::after { content: ""; position: absolute; right: -36px; top: 34px; width: 112px; height: 112px; border-radius: 999px; background: rgba(109,107,255,.12); }
-    .hero-device { position: relative; z-index: 1; width: min(86%, 340px); transform: rotate(-4deg); filter: drop-shadow(0 22px 30px rgba(36,36,49,.16)); }
     .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
     .nav a { display: inline-flex; border: 1px solid rgba(92,89,243,.18); border-radius: 999px; padding: 10px 14px; color: var(--indigo-dark); background: var(--surface); font-size: 12px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 28px rgba(36,36,49,.06); }
     .hero-logo { display: block; width: 104px; height: auto; margin-bottom: 18px; }
@@ -179,8 +174,8 @@
     .owner { color: var(--indigo); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
     .action strong { display: block; font-size: 13px; }
     .action span { color: var(--muted); font-size: 12px; }
-    @media (max-width: 1100px) { header { grid-template-columns: 1fr; } .hero-visual { min-height: 280px; } .hero-device { max-width: 320px; } .hero-controls { align-items: flex-start; } .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col, .mix-layout { grid-template-columns: 1fr; } .panel-head { flex-direction: column; } }
-    @media (max-width: 640px) { .page { width: min(100% - 18px, 1320px); padding-top: 12px; } header, .panel { padding: 20px; border-radius: 22px; } .hero-visual { min-height: 230px; } .hero-controls { margin-top: 18px; } .global-filter { align-items: flex-start; } .legend { margin-left: 0; } .kpi-grid, .service-grid { grid-template-columns: 1fr; } .bar-row, .action, .diverging-row { grid-template-columns: 1fr; } h1 { font-size: 42px; } }
+    @media (max-width: 1100px) { .hero-controls { align-items: flex-start; } .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col, .mix-layout { grid-template-columns: 1fr; } .panel-head { flex-direction: column; } }
+    @media (max-width: 640px) { .page { width: min(100% - 18px, 1320px); padding-top: 12px; } header, .panel { padding: 20px; border-radius: 22px; } .hero-controls { margin-top: 18px; } .global-filter { align-items: flex-start; } .legend { margin-left: 0; } .kpi-grid, .service-grid { grid-template-columns: 1fr; } .bar-row, .action, .diverging-row { grid-template-columns: 1fr; } h1 { font-size: 42px; } }
   </style>
 </head>
 <body>
@@ -192,10 +187,6 @@
         <h1>Monthly Health Profitability</h1>
         <p>A monthly cockpit to read insurance balance, service economics and next actions with Alan-level clarity.</p>
         <div class="hero-controls"><section class="global-filter" aria-label="Global dashboard filters"><div class="control"><label for="month">Month</label><select id="month"><option>Apr 2026</option><option>Mar 2026</option><option>Feb 2026</option></select></div><div class="legend" aria-label="Status legend"><strong>Status</strong><span><i></i>Neutral</span><span><i class="dot-good"></i>Good</span><span><i class="dot-watch"></i>Watch</span><span><i class="dot-critical"></i>Critical</span></div></section></div>
-      </div>
-      <div class="hero-visual" aria-label="Alan app inspired illustration">
-        <div class="hero-blob"></div>
-        <img class="hero-device" src="Alan_assets/marmot_phone.png" alt="Alan app visual" />
       </div>
     </header>
     <div class="layout">
